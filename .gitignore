@@ -1,3 +1,6 @@
 # Local stuff
 *.py[co]
 db.sqlite3
+
+# Problem data
+problems/

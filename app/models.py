@@ -35,7 +35,7 @@ class Problem(models.Model):
     owners = models.ManyToManyField(auth_models.User)
 
     # Validation stuff
-    validator_src = models.FilePathField(path=dir, recursive=True, max_length=64, null=True)  # Can be null, in which case, yes
+    validator_src = models.FilePathField(path=os.getcwd(), recursive=True, max_length=64, null=True)  # Can be null, in which case, yes
 
     def list_files(self):
         raise NotImplementedError
