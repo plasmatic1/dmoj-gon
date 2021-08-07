@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth import models as auth_models  # I would call this goth_models but that would be too sus
+import os
 
 
 class Test(models.Model):
@@ -9,13 +10,13 @@ class Test(models.Model):
         (GENERATOR, 'Generator'),
         (HAND_WRITTEN, 'Handwritten')
     ), default=GENERATOR)
-
     data = models.CharField(max_length=256)
+    p_batch = models.ForeignKey(to='Batch', on_delete=models.CASCADE)
 
 
 class Batch(models.Model):
     points = models.IntegerField()
-    tests = ArrayField(models.ForeignKey(to='Test', on_delete=models.CASCADE))
+    p_problem = models.ForeignKey(to='Problem', on_delete=models.CASCADE)  # I got 99 problems and this is one of them
 
 
 class Problem(models.Model):
@@ -23,23 +24,29 @@ class Problem(models.Model):
     MISC_FILE = 1
     _FILE_TYPES = {CASE_FILE, MISC_FILE}
 
-    dir = models.CharField(max_length=64)
-    batches = ArrayField(Batch)
+    dir = models.FilePathField(path=os.getcwd(), allow_files=False, allow_folders=True, max_length=64)
 
     init_yml_extra = models.CharField(max_length=1024)
     time_limit = models.IntegerField()
     memory_limit = models.IntegerField()
 
+    # Utils and security stuff
+    last_modified = models.DateTimeField()
+    owners = models.ManyToManyField(auth_models.User)
+
+    # Validation stuff
+    validator_src = models.FilePathField(path=dir, recursive=True, max_length=64, null=True)  # Can be null, in which case, yes
+
     def list_files(self):
-        pass
+        raise NotImplementedError
 
     def generate(self):
-        pass
+        raise NotImplementedError
 
     def upload_file(self, file, file_type):  # what is file?????
         if file_type not in self._FILE_TYPES:
             raise ValueError('Invalid file type')
-        pass
+        raise NotImplementedError
 
     def package(self):
-        pass
+        raise NotImplementedError
