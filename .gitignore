@@ -1,6 +1,9 @@
 # Local stuff
 *.py[co]
+
+# Data
 db.sqlite3
+app/migrations
 
 # Problem data
 problems/
