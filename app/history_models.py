@@ -29,6 +29,9 @@ class BatchResult(models.Model):
 
     p_sinvocation = models.ForeignKey(to='app.history_models.SingleInvocationResult', on_delete=models.CASCADE)
 
+    def tests(self):
+        return CaseResult.objects.filter(p_batch_id=self.id)
+
 
 class SingleInvocationResult(models.Model):
     src_name = models.CharField(max_length=64)
@@ -41,6 +44,9 @@ class SingleInvocationResult(models.Model):
 
     p_invocation = models.ForeignKey(to='app.history_models.InvocationResult', on_delete=models.CASCADE)
 
+    def batches(self):
+        return BatchResult.objects.filter(p_sinvocation_id=self.id)
+
     def ok(self):
         return self.verdict == self.exp_verdict and abs(self.points - self.max_points) <= EPS
 
@@ -49,5 +55,8 @@ class InvocationResult(models.Model):
     timestamp = models.DateTimeField()
     p_problem = models.ForeignKey(to='app.models.Problem', on_delete=models.CASCADE)
 
+    def invocations(self):
+        return SingleInvocationResult.objects.filter(p_invocation_id=self.id)
+
     def ok(self):
-        return all(map(lambda res: res.ok(), SingleInvocationResult.objects.filter(p_invocation_id=self.id).all()))
+        return all(map(lambda res: res.ok(), self.invocations().all()))

@@ -1,6 +1,14 @@
 from django.db import models
 from django.contrib.auth import models as auth_models  # I would call this goth_models but that would be too sus
+from dmojgon.settings import DATA_DIR
+from . import history_models
 import os
+
+
+class UploadedFile(models.Model):
+    file = models.FileField(upload_to=DATA_DIR)
+    timestamp = models.DateTimeField()
+    p_problem = models.ForeignKey(to='Problem', on_delete=models.CASCADE)
 
 
 class Test(models.Model):
@@ -11,12 +19,20 @@ class Test(models.Model):
         (HAND_WRITTEN, 'Handwritten')
     ), default=GENERATOR)
     data = models.CharField(max_length=256)
+
+    # Cur I/O
+    cur_input = models.FileField(upload_to=DATA_DIR, null=True)
+    cur_output = models.FileField(upload_to=DATA_DIR, null=True)
+
     p_batch = models.ForeignKey(to='Batch', on_delete=models.CASCADE)
 
 
 class Batch(models.Model):
     points = models.IntegerField()
     p_problem = models.ForeignKey(to='Problem', on_delete=models.CASCADE)  # I got 99 problems and this is one of them
+
+    def tests(self):
+        return Test.objects.filter(p_batch_id=self.id)
 
 
 class Problem(models.Model):
@@ -34,19 +50,18 @@ class Problem(models.Model):
     last_modified = models.DateTimeField()
     owners = models.ManyToManyField(auth_models.User)
 
-    # Validation stuff
-    validator_src = models.FilePathField(path=os.getcwd(), recursive=True, max_length=64, null=True)  # Can be null, in which case, yes
+    # Files
+    validator = models.FileField(upload_to=DATA_DIR, null=True)
+    main_solution = models.FileField(upload_to=DATA_DIR, null=True)
 
-    def list_files(self):
-        raise NotImplementedError
+    def batches(self):
+        return Batch.objects.filter(p_problem_id=self.id)
 
-    def generate(self):
-        raise NotImplementedError
+    def aux_files(self):
+        return UploadedFile.objects.filter(p_problem_id=self.id)
 
-    def upload_file(self, file, file_type):  # what is file?????
-        if file_type not in self._FILE_TYPES:
-            raise ValueError('Invalid file type')
-        raise NotImplementedError
+    def invocation_results(self):
+        return history_models.InvocationResult.objects.filter(p_problem_id=self.id)
 
-    def package(self):
-        raise NotImplementedError
+    def validator_results(self):
+        return history_models.ValidatorResult.objects.filter(p_problem_id=self.id)
