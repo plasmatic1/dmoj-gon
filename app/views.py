@@ -1,6 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import logout
 
 
-def index(request):
-    return render(request, 'view_all_problems.html')
+def index_view(request):
+
+    return render(request, 'view_all_problems.html', {
+        'user': request.user
+    })
+
+

@@ -1,7 +1,26 @@
 {% extends 'base.html' %}
 
 {% block title %} View Problems {% endblock %}
+{% block header %} View Problems {% endblock %}
 
 {% block body %}
-    <p>Hello, World!</p>
+    <div class="uk-flex-row">
+        <form action="{% url 'index' %}" method="get" class="uk-form-width-medium">
+            <div class="uk-margin" uk-margin>
+                <input name="search" type="text" class="uk-input" placeholder="Search Problems" />
+                <input type="submit" class="uk-button uk-button-default" value="Go">
+            </div>
+        </form>
+
+        a.uk-button.uk-button
+    </div>
+
+    {% if not user.is_authenticated %}
+        <script>
+        UIkit.notification({
+            message: 'User not signed in, no problems will be available to view',
+            status: 'warning',
+        })
+        </script>
+    {% endif %}
 {% endblock %}
