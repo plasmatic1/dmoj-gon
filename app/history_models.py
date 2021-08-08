@@ -19,7 +19,7 @@ class CaseResult(models.Model):
     verdict = models.CharField(max_length=2)
     feedback = models.CharField(max_length=128)
 
-    p_batch = models.ForeignKey(to='app.history_models.BatchResult', on_delete=models.CASCADE)
+    p_batch = models.ForeignKey(to='BatchResult', on_delete=models.CASCADE)
 
 
 class BatchResult(models.Model):
@@ -27,7 +27,7 @@ class BatchResult(models.Model):
     points = models.FloatField()
     max_points = models.FloatField()
 
-    p_sinvocation = models.ForeignKey(to='app.history_models.SingleInvocationResult', on_delete=models.CASCADE)
+    p_sinvocation = models.ForeignKey(to='SingleInvocationResult', on_delete=models.CASCADE)
 
     def tests(self):
         return CaseResult.objects.filter(p_batch_id=self.id)
@@ -42,7 +42,7 @@ class SingleInvocationResult(models.Model):
     points = models.FloatField()
     max_points = models.FloatField()
 
-    p_invocation = models.ForeignKey(to='app.history_models.InvocationResult', on_delete=models.CASCADE)
+    p_invocation = models.ForeignKey(to='InvocationResult', on_delete=models.CASCADE)
 
     def batches(self):
         return BatchResult.objects.filter(p_sinvocation_id=self.id)
@@ -53,7 +53,7 @@ class SingleInvocationResult(models.Model):
 
 class InvocationResult(models.Model):
     timestamp = models.DateTimeField()
-    p_problem = models.ForeignKey(to='app.models.Problem', on_delete=models.CASCADE)
+    p_problem = models.ForeignKey(to='Problem', on_delete=models.CASCADE)
 
     def invocations(self):
         return SingleInvocationResult.objects.filter(p_invocation_id=self.id)

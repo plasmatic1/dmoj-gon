@@ -7,7 +7,7 @@
     <div class="uk-flex-row">
         <form action="{% url 'index' %}" method="get" class="uk-form-width-medium">
             <div class="uk-margin" uk-margin>
-                <input name="search" type="text" class="uk-input" placeholder="Search Problems" />
+                <input name="search" type="text" class="uk-input" placeholder="Search Problems" value="{{ search | default_if_none:'' }}"/>
                 <input type="submit" class="uk-button uk-button-default" value="Go">
             </div>
         </form>
