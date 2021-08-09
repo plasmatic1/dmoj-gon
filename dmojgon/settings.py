@@ -128,4 +128,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # APP SPECIFIC
-DATA_DIR = BASE_DIR / 'data'
+DATA_DIR = BASE_DIR / 'data'  # Place to upload FileFields
+PROBLEMS_DIR = BASE_DIR / 'problems'  # Place for any in-place problem data (AKA packages)
+EPS = 1e-5  # Precision used to compare point values

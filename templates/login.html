@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Login {% endblock %}
+{% block header %} Login {% endblock %}
+
+{% block body %}
+<form action="{% url 'login_request' %}" method="post" class="uk-form-width-large uk-form-horizontal">
+    {% csrf_token %}
+    <div>
+        <label for="username" class="uk-form-label">Username</label>
+        <input type="text" class="uk-input" placeholder="Username" name="username" id="username"/>
+    </div>
+    <div class="uk-margin">
+        <label for="password" class="uk-form-label">Password</label>
+        <input type="text" class="uk-input" placeholder="Password" name="password" id="password"/>
+    </div>
+    <div class="uk-margin">
+        <input type="submit" class="uk-button uk-button-default" value="login">
+    </div>
+</form>
+{% endblock %}

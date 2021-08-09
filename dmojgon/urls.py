@@ -19,6 +19,8 @@ from . import util_views
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='django-admin'),
+    path('login/', util_views.login_view, name='login'),
+    path('login_request/', util_views.login_request_view, name='login_request'),
     path('logout/', util_views.logout_view, name='logout'),
     path('', include('app.urls'))
 ]

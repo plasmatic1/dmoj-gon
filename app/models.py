@@ -40,11 +40,11 @@ class Problem(models.Model):
     MISC_FILE = 1
     _FILE_TYPES = {CASE_FILE, MISC_FILE}
 
-    dir = models.FilePathField(path=os.getcwd(), allow_files=False, allow_folders=True, max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
-    init_yml_extra = models.CharField(max_length=1024)
-    time_limit = models.IntegerField()
-    memory_limit = models.IntegerField()
+    init_yml_extra = models.CharField(max_length=1024, default='')
+    time_limit = models.FloatField(default=0.)  # seconds
+    memory_limit = models.IntegerField(default=0)  # kib
 
     # Utils and security stuff
     last_modified = models.DateTimeField()
@@ -52,7 +52,9 @@ class Problem(models.Model):
 
     # Files
     validator = models.FileField(upload_to=DATA_DIR, null=True)
+    validator_executor = models.CharField(max_length=8, null=True)
     main_solution = models.FileField(upload_to=DATA_DIR, null=True)
+    main_solution_executor = models.CharField(max_length=8, null=True)
 
     def batches(self):
         return Batch.objects.filter(p_problem_id=self.id)
@@ -65,3 +67,21 @@ class Problem(models.Model):
 
     def validator_results(self):
         return history_models.ValidatorResult.objects.filter(p_problem_id=self.id)
+
+    def invocations(self):
+        return Invocation.objects.filter(p_problem_id=self.id)
+
+    def has_validator(self):
+        return self.validator is not None and self.validator_executor is not None
+
+    def has_main_solution(self):
+        return self.main_solution is not None and self.main_solution_executor is not None
+
+
+class Invocation(models.Model):
+    source = models.FileField(upload_to=DATA_DIR)
+    lang = models.CharField(max_length=8)
+    expected_verdict = models.CharField(max_length=2)
+    expected_points = models.FloatField()
+
+    p_problem = models.ForeignKey(to='Problem', on_delete=models.CASCADE)

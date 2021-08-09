@@ -37,7 +37,7 @@
             {% if user.is_authenticated %}
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
-                <li><a href="#">Login</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
             {% endif %}
         </ul>
     </div>
@@ -49,6 +49,15 @@
 
     {% block body %} {% endblock %}
 </div>
+
+{% if error %}
+    <script>
+        UIkit.notification({
+            message: '{{ error }}',
+            status: 'danger',
+        })
+    </script>
+{% endif %}
 
 </body>
 </html>

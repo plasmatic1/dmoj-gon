@@ -1,7 +1,5 @@
 from django.db import models
-
-# Precision delta
-EPS = 1e-5
+from dmojgon.settings import EPS
 
 
 class ValidatorResult(models.Model):

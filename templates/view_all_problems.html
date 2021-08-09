@@ -4,23 +4,49 @@
 {% block header %} View Problems {% endblock %}
 
 {% block body %}
-    <div class="uk-flex-row">
-        <form action="{% url 'index' %}" method="get" class="uk-form-width-medium">
-            <div class="uk-margin" uk-margin>
-                <input name="search" type="text" class="uk-input" placeholder="Search Problems" value="{{ search | default_if_none:'' }}"/>
+    <div class="uk-row">
+        <form action="{% url 'index' %}" method="get" class="uk-form-width-large">
+            <div class="uk-margin uk-flex-inline">
+                <input name="search" type="text" class="uk-input" placeholder="Search Problems"
+                       value="{{ search | default_if_none:'' }}"/>
                 <input type="submit" class="uk-button uk-button-default" value="Go">
             </div>
         </form>
+    </div>
 
-        a.uk-button.uk-button
+    <table class="uk-table uk-table-divider">
+        <tr>
+            <th>Name</th>
+            <th>Owners</th>
+            <th>Actions</th>
+        </tr>
+        {% for problem in problems %}
+            <tr>
+                <td>{{ problem.name }}</td>
+                <td>{{ problem.owners.all | join:", " }}</td>
+                <td>
+                    <a href="{% url 'view' problem.name %}">View</a>
+                    <a href="{% url 'delete' problem.name %}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div class="uk-row">
+        <form action="{% url 'new' %}" method="get" class="uk-form-width-large">
+            <div class="uk-margin uk-flex-inline">
+                <input name="name" type="text" class="uk-input" placeholder="Problem Name"/>
+                <input type="submit" class="uk-button uk-button-default" value="New Problem">
+            </div>
+        </form>
     </div>
 
     {% if not user.is_authenticated %}
         <script>
-        UIkit.notification({
-            message: 'User not signed in, no problems will be available to view',
-            status: 'warning',
-        })
+            UIkit.notification({
+                message: 'User not signed in, no problems will be available to view',
+                status: 'warning',
+            })
         </script>
     {% endif %}
 {% endblock %}
