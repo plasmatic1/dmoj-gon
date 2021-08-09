@@ -37,10 +37,43 @@ def index_view(request):
     })
 
 
-def problem_view(request, pname):
-    p = get_object_or_404(Problem, name=pname)
-    if request.user not in p.owners:
-        return rej_error(f'You cannot access problem {p.name}')
+# Decorator that fetches the problem
+def fetch_problem_decorator(view):
+    def wrapper(request, **kwargs):
+        p = get_object_or_404(Problem, name=kwargs['name'])
+        if request.user.is_anonymous or not p.owners.filter(id=request.user.id).exists():
+            return rej_error(f'You cannot access problem {p.name}')
+        return view(request, p, **kwargs)
+
+    return wrapper
+
+
+@fetch_problem_decorator
+def problem_view(request, p, name):
+    return render(request, 'problem_view/main.html', {
+        'problem': p
+    })
+
+
+@fetch_problem_decorator
+def problem_tests_view(request, p, name):
+    return render(request, 'problem_view/tests.html', {
+        'problem': p
+    })
+
+
+@fetch_problem_decorator
+def problem_invocations_view(request, p, name):
+    return render(request, 'problem_view/invocations.html', {
+        'problem': p
+    })
+
+
+@fetch_problem_decorator
+def problem_package_view(request, p, name):
+    return render(request, 'problem_view/package.html', {
+        'problem': p
+    })
 
 
 def wip_view(request, **kwargs):

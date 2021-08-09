@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block nav_extra %}
+    <li><a href="{% url 'view' problem.name %}">{{ problem.name }}</a></li>
+{% endblock %}
+
+{% block body %}
+    <h1>Problem "{{ problem.name }}"</h1>
+
+    <ul class="uk-subnav" id="problem-subnav">
+        <li><a href="{% url 'view' problem.name %}">General</a></li>
+        <li><a href="{% url 'view_tests' problem.name %}">Tests</a></li>
+        <li><a href="{% url 'view_invocations' problem.name %}">Invocations</a></li>
+        <li><a href="{% url 'view_package' problem.name %}">Package</a></li>
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        console.log(window.location.pathname);
+        $('#problem-subnav > li a[href$=\'' + window.location.pathname + '\']').each(function(idx, e) {
+            if (e.getAttribute('href') === window.location.pathname) {
+                e.parentNode.classList.add('uk-active');
+            }
+        });
+    </script>
+
+    {% block _body %} {% endblock %}
+{% endblock %}

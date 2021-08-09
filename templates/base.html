@@ -22,6 +22,7 @@
         <div class="uk-navbar-item">DMOJ-GON</div>
         <ul class="uk-breadcrumb">
             <li><a href="{% url 'index' %}">Problems</a></li>
+            {% block nav_extra %} {% endblock %}
         </ul>
     </div>
 
