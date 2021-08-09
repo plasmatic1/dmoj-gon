@@ -2,6 +2,14 @@
 
 {% block nav_extra %}
     <li><a href="{% url 'view' problem.name %}">{{ problem.name }}</a></li>
+
+    {% if sub_page == 'tests' %}
+        <li><a href="{% url 'view_tests' problem.name %}">tests</a></li>
+    {% elif sub_page == 'invocations' %}
+        <li><a href="{% url 'view_invocations' problem.name %}">invocations</a></li>
+    {% elif sub_page == 'package' %}
+        <li><a href="{% url 'view_package' problem.name %}">package</a></li>
+    {% endif %}
 {% endblock %}
 
 {% block body %}

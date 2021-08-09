@@ -4,6 +4,8 @@ from django.utils.timezone import now
 from .models import Problem
 from response_utils import rej_error
 
+import os
+
 
 def new_problem_view(request):
     name = request.GET.get('name')
@@ -58,21 +60,24 @@ def problem_view(request, p, name):
 @fetch_problem_decorator
 def problem_tests_view(request, p, name):
     return render(request, 'problem_view/tests.html', {
-        'problem': p
+        'problem': p,
+        'sub_page': 'tests',
     })
 
 
 @fetch_problem_decorator
 def problem_invocations_view(request, p, name):
     return render(request, 'problem_view/invocations.html', {
-        'problem': p
+        'problem': p,
+        'sub_page': 'invocations',
     })
 
 
 @fetch_problem_decorator
 def problem_package_view(request, p, name):
     return render(request, 'problem_view/package.html', {
-        'problem': p
+        'problem': p,
+        'sub_page': 'package',
     })
 
 
